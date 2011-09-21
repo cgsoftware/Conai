@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+ 
+           
+      
+      
+      
+      
+      <record id="view_stampa_conai" model="ir.ui.view">
+            <field name="name">Stampa Riepilogativa CONAI</field>
+            <field name="model">stampa.conai</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                    <form string="Parametri di Stampa"  >
+                        <field name="dadata" colspan="4" />
+                        <field name="adata" colspan="4" />
+                        <separator colspan="4"/>
+                        <group col="4" colspan="4">
+                            <button icon="gtk-cancel" special="cancel" string="Cancel" colspan="2"/>
+                            <button icon="gtk-print" name="check_report" string="Print" type="object" colspan="2" default_focus="1" />
+                        </group>
+                    </form>
+                
+            </field>
+        </record>
+	
+	<act_window name="Stampa Reportistica"
+            res_model="stampa.conai"
+            src_model="conai.cod"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="view_stampa_conai"/>  
+	
+	
+	<menuitem
+        name="Stampa Conai"
+        action="view_stampa_conai"
+        id="stampa_conai"
+       parent="base.menu_product" sequence="5"
+       />
+               
+
+                  
+            
+             
+        
+    </data>
+</openerp>
+

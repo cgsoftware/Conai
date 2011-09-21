@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+	 <record model="ir.ui.view" id="product_conai_view">
+            <field name="name">product.conai.view</field>
+           <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+                <field name="arch" type="xml">
+	                <notebook position="inside">        
+				  <page string="Conai">
+					<separator colspan="4" string="CONAI"/>
+					<field name="conai" />
+					<newline/>
+					<field name="peso_prod"/>
+					<newline/>
+					<field name="valore_conai_prod"/>
+					<newline/>
+	  </page>
+			</notebook>
+
+		  </field>
+        </record>
+
+        
+    <record model="ir.ui.view" id="conai_template_view">
+    	<field name="name">conai.template.view</field>
+    	<field name="model">product.template</field>
+    	<field name="inherit_id" ref="product.product_template_form_view"/>
+    	<field name="arch" type="xml">
+	    	<notebook position="inside">        
+				<page string="Conai">
+					<separator colspan="4" string="CONAI"/>
+					<field name="conai" />
+					<newline/>
+					<field name="peso_template"/>
+					<newline/>
+				</page>
+			</notebook>
+		</field>
+	</record>
+    	
+
+	
+	<record model="ir.ui.view" id="Esenzioni">
+	  <field name="name">conai.esenzioni</field>
+	  <field name="model">res.partner</field>
+	  <field name="inherit_id" ref="base.view_partner_form"/>
+	  <field name="arch" type="xml">
+	    <notebook position="inside">
+	      <page string="Esenzione CONAI">
+		<separator colspan="4" string="CONAI"/>
+
+		<field name="esenzione"/>
+		<newline/>
+		<field name="imballo"/>
+
+		<newline/>
+		<field name="perc"/>
+		<newline/>
+		<field name="dati"/>
+
+		<newline/>
+		<field name="scad_esenzione"/>
+	      </page>
+	    </notebook>
+	  </field>
+	</record>
+	
+
+
+
+
+	
+
+	 <record id="view_conai_tree" model="ir.ui.view">
+            <field name="name">conai.tree</field>
+            <field name="model">conai.cod</field>
+	    <field name="type">tree</field>
+	    <field name="arch" type="xml">
+	      <tree string="Categorie Conai">
+		<field name="name" />
+		<field name="descrizione" />
+		<field name="valore" />
+	      </tree>
+	    </field>
+	  </record>
+	   
+	  
+	 <record id="view_conai_form" model="ir.ui.view">
+            <field name="name">conai.form</field>
+			<field name="model">conai.cod</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Categorie Conai">
+			<field name="name" />
+			<field name="descrizione" />
+			<field name="valore" />
+
+		      </form>
+		    </field>
+		  </record>
+
+ <record id="view_conai_es_tree" model="ir.ui.view">
+            <field name="name">conai.esenzioni.tree</field>
+            <field name="model">conai.esenzioni</field>
+	    <field name="type">tree</field>
+	    <field name="arch" type="xml">
+	      <tree string="Esenzioni Conai">
+		<field name="name" />
+		<field name="descrizione" />
+
+
+	      </tree>
+	    </field>
+	  </record>
+	  
+ <record id="view_conai_es_form" model="ir.ui.view">
+            <field name="name">conai.esenzioni.form</field>
+            <field name="model">conai.esenzioni</field>
+	    <field name="type">form</field>
+	    <field name="arch" type="xml">
+	      <form string="Esenzioni Conai">
+		<field name="name" />
+		<field name="descrizione" />
+	      </form>
+	    </field>
+	  </record>
+		  
+	<record id="action_conai" model="ir.actions.act_window">
+            <field name="name">Conai</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">conai.cod</field>
+		<field name="view_mode">tree,form</field>
+     </record>
+          
+<menuitem action="action_conai" id="menu_conai_tree" parent="base.menu_product" /> 
+
+<record id="action_2" model="ir.actions.act_window">
+            <field name="name">Esenzioni Conai</field>
+            <field name="type">ir.actions.act_window</field>
+
+            <field name="res_model">conai.esenzioni</field>
+		<field name="view_mode">tree,form</field>
+     </record>
+
+<menuitem action="action_2" id="menu_2_tree" parent="base.menu_product" />
+
+
+       <record model="ir.ui.view" id="view_order_form_conai">
+            <field name="name">view.order.form.conai</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="delay" position="after">
+                    <newline/>
+                    <field name='peso_conai'/>
+                <field name="totale_conai" />
+                
+               </field>     
+            </field>
+           </record>
+           
+    	<record  model="ir.ui.view" id="view_fiscaldoc_form_conai">
+            <field name="name">fiscaldoc.form.conai</field>
+            <field name="model">fiscaldoc.header</field>
+            <field name="inherit_id" ref="ItalianFiscalDocument.view_fiscaldoc_form"/>
+            <field name="arch" type="xml">
+  
+            	<field name="codice_iva" position="after"> 
+                <newline/>
+		  		<field name="peso_conai"/>
+		  		<field name="totale_conai" />
+		  	</field>
+
+		  </field>
+    
+        </record>
+                
+</data>
+</openerp>

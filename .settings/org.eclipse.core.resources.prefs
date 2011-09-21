@@ -1,0 +1,20 @@
+<<<<<<< HEAD
+#Mon Sep 19 19:05:13 CEST 2011
+eclipse.preferences.version=1
+encoding//wizard/Stampaconai.py=utf-8
+encoding//wizard/__init__.py=utf-8
+=======
+#Mon Apr 11 17:22:32 CEST 2011
+eclipse.preferences.version=1
+>>>>>>> 458bcde7e624a5f78113ce16df60e6f42bc865cf
+encoding/__init__.py=utf-8
+encoding/__terp__.py=utf-8
+encoding/conai.py=utf-8
+encoding/fiscaldocument.py=utf-8
+<<<<<<< HEAD
+encoding/iva.py=utf-8
+=======
+>>>>>>> 458bcde7e624a5f78113ce16df60e6f42bc865cf
+encoding/partner.py=utf-8
+encoding/product.py=utf-8
+encoding/sale.py=utf-8
