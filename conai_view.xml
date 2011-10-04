@@ -42,19 +42,15 @@
     	
 
 	
-	<record model="ir.ui.view" id="Esenzioni">
-	  <field name="name">conai.esenzioni</field>
+	<record model="ir.ui.view" id="view_ese_conai_partner">
+	  <field name="name">view_ese_conai_partner</field>
 	  <field name="model">res.partner</field>
 	  <field name="inherit_id" ref="base.view_partner_form"/>
 	  <field name="arch" type="xml">
 	    <notebook position="inside">
 	      <page string="Esenzione CONAI">
 		<separator colspan="4" string="CONAI"/>
-
 		<field name="esenzione"/>
-		<newline/>
-		<field name="imballo"/>
-
 		<newline/>
 		<field name="perc"/>
 		<newline/>
