@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        
+     <menuitem name="Gestione Conai " id="menu_gest_conai" parent="base.menu_base_partner"  icon="STOCK_OPEN"/>
 
 	 <record model="ir.ui.view" id="product_conai_view">
             <field name="name">product.conai.view</field>
@@ -130,7 +132,7 @@
 		<field name="view_mode">tree,form</field>
      </record>
           
-<menuitem action="action_conai" id="menu_conai_tree" parent="base.menu_product" /> 
+<menuitem action="action_conai" id="menu_conai_tree" parent="menu_gest_conai" /> 
 
 <record id="action_2" model="ir.actions.act_window">
             <field name="name">Esenzioni Conai</field>
@@ -140,38 +142,9 @@
 		<field name="view_mode">tree,form</field>
      </record>
 
-<menuitem action="action_2" id="menu_2_tree" parent="base.menu_product" />
+<menuitem action="action_2" id="menu_2_tree" parent="menu_gest_conai" />
 
 
-       <record model="ir.ui.view" id="view_order_form_conai">
-            <field name="name">view.order.form.conai</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <field name="delay" position="after">
-                    <newline/>
-                    <field name='peso_conai'/>
-                <field name="totale_conai" />
-                
-               </field>     
-            </field>
-           </record>
-           
-    	<record  model="ir.ui.view" id="view_fiscaldoc_form_conai">
-            <field name="name">fiscaldoc.form.conai</field>
-            <field name="model">fiscaldoc.header</field>
-            <field name="inherit_id" ref="ItalianFiscalDocument.view_fiscaldoc_form"/>
-            <field name="arch" type="xml">
-  
-            	<field name="codice_iva" position="after"> 
-                <newline/>
-		  		<field name="peso_conai"/>
-		  		<field name="totale_conai" />
-		  	</field>
-
-		  </field>
-    
-        </record>
                 
 </data>
 </openerp>

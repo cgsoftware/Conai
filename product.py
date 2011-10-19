@@ -20,7 +20,7 @@ class producttemplate(osv.osv):
 producttemplate()
 
 
-class product(osv.osv):
+class product_product(osv.osv):
 
     _inherit = 'product.product'
     
@@ -44,5 +44,5 @@ class product(osv.osv):
                 'valore_conai_prod':fields.function(_calcola_valore_conai , method=True, string='Valore Conai', store=True, multi='sums')  #campo function moltiplica il peso dell'imballo per il prezzo unitario della tabella CONAI
                 
                 }
-product()
+product_product()
 

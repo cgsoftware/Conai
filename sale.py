@@ -12,13 +12,20 @@ class sale_order_line(osv.osv):
     
     def _tot_riga_conai(self, cr, uid, ids, field_name, arg, context=None):
      #  PER CALCOLARE QUESTI DATI DEVE PRIMA ACCERTARSI CHE IL CASSTELLETTO IVA SIA CORRETTO
-     
-     res = {}
-     return res
+        res = {}
+        if context is None:
+            context = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.prezzo_conai * line.peso_conai
+                
+        return res
    
     _columns = {
+               'cod_conai':fields.many2one('conai.cod', 'Codice Conai'),
                'peso_conai':fields.float('Peso Conai', digits=(2, 7)),
-               'totale_conai':fields.float('Totale Conai', digits=(2, 7)),
+               'prezzo_conai':fields.float('Valore Unitario ', digits=(2, 7), required=True),
+               'totale_conai': fields.function(_tot_riga_conai, method=True, string='Totale riga Conai', digits=(12, 7)),
+               # 'totale_conai':fields.float('Totale Conai', digits=(12, 7)),
                }
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
@@ -36,8 +43,10 @@ class sale_order_line(osv.osv):
           art_obj = self.pool.get("product.product").browse(cr, uid, [product])[0]
 
           prz_conai = art_obj.conai.valore
-          result['peso_conai'] = art_obj.peso * result['product_uos_qty']
-          result['totale_conai'] = prz_conai * art_obj.peso * result['product_uos_qty']
+          result['cod_conai'] = art_obj.conai.id
+          result['peso_conai'] = art_obj.production_conai_peso * result['product_uos_qty']
+          result['prezzo_conai'] = prz_conai
+         # result['totale_conai'] = prz_conai * art_obj.peso * result['product_uos_qty']
           #import pdb;pdb.set_trace()
         return {'value': result, 'domain': domain, 'warning': warning}   
 sale_order_line()

@@ -23,7 +23,7 @@
 import conai
 import partner
 import product
-# import sale
+import sale
 # import fiscaldocument
 # import iva
 # import wizard

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+       <record model="ir.ui.view" id="view_order_form_conai">
+            <field name="name">view.order.form.conai</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="delay" position="after">
+                    <newline/>
+                    <field name='cod_conai'/>
+                    <field name='prezzo_conai'/>
+                    <field name='peso_conai'/>
+                	<field name="totale_conai" />
+                </field>     
+            </field>
+           </record>
+           
+
+        
+</data>
+</openerp>

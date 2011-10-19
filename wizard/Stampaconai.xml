@@ -38,7 +38,7 @@
         name="Stampa Conai"
         action="view_stampa_conai"
         id="stampa_conai"
-       parent="base.menu_product" sequence="5"
+       parent="menu_gest_conai" sequence="5"
        />
                
 
