@@ -9,6 +9,9 @@
   
             	<field name="codice_iva" position="after"> 
                 <newline/>
+                  <field name='cod_conai' />
+                  <field name='prezzo_conai' />
+                  <newline/>
 		  		<field name="peso_conai"/>
 		  		<field name="totale_conai" />
 		  	</field>

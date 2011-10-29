@@ -27,7 +27,7 @@
     'author': 'C & G Software sas',
     'website': 'http://www.cgsoftware.it',
     "depends" : ['base', 'account', 'base_vat', 'product', 'l10n_it_base', 'l10n_it_sale', 'ItalianFiscalDocument'],
-    "update_xml" : ['conai_view.xml', 'wizard/Stampaconai.xml', 'sale.xml'],
+    "update_xml" : ['conai_view.xml', 'wizard/Stampaconai.xml', 'sale.xml','FiscalDoc.xml'],
 
     "active": False,
     "installable": True

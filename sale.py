@@ -41,12 +41,39 @@ class sale_order_line(osv.osv):
         if product:
           #import pdb;pdb.set_trace()
           art_obj = self.pool.get("product.product").browse(cr, uid, [product])[0]
-
-          prz_conai = art_obj.conai.valore
-          result['cod_conai'] = art_obj.conai.id
-          result['peso_conai'] = art_obj.production_conai_peso * result['product_uos_qty']
-          result['prezzo_conai'] = prz_conai
+          if art_obj.conai.id:
+              prz_conai = art_obj.conai.valore
+              result['cod_conai'] = art_obj.conai.id
+              result['peso_conai'] = art_obj.production_conai_peso * result['product_uos_qty']
+              result['prezzo_conai'] = prz_conai
+          else:
+              result['cod_conai'] = 0.0
+              result['peso_conai'] = 0.0
+              result['prezzo_conai'] = 0.0
+               
+               
          # result['totale_conai'] = prz_conai * art_obj.peso * result['product_uos_qty']
           #import pdb;pdb.set_trace()
-        return {'value': result, 'domain': domain, 'warning': warning}   
+        return {'value': result, 'domain': domain, 'warning': warning}
+       
+    def on_change_qty(self, cr, uid, ids, product_id, listino_id, qty, partner_id, uom, data_doc): #
+    
+        v = {}
+        if product_id:
+                    art_obj = self.pool.get("product.product").browse(cr, uid, [product_id])[0]
+                    if art_obj.conai.id:
+                        prz_conai = art_obj.conai.valore
+                        v['cod_conai'] = art_obj.conai.id
+                        v['peso_conai'] = art_obj.production_conai_peso * qty
+                        v['prezzo_conai'] = prz_conai
+                    else:
+                        v['cod_conai'] = 0.0
+                        v['peso_conai'] = 0.0
+                        v['prezzo_conai'] = 0.0
+        
+        return {'value':v}    
+    
+    
+    
+    
 sale_order_line()

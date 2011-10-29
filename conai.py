@@ -33,19 +33,6 @@ class conai_esenzioni(osv.osv):
               }    
 conai_esenzioni()
 
-class conai_castelletto(osv.osv):
-    _name = "conai.castelletto"
-    _description = "Castelletto CONAI"      
-    _columns = {
-                     'name': fields.many2one('fiscaldoc.header', 'Numero Documento', required=True, ondelete='cascade', select=True, readonly=True),
-                     
-                     'imballo':fields.many2one('conai.cod', 'Codice CONAI', required=True, ondelete='cascade', select=True, readonly=True),
-                     
-                     'peso':fields.float('Peso', digits=(12, 2)),
-                     'totale_conai':fields.float('Totale Imponibile', digits=(12, 2)),
-                               
-                     }
-conai_castelletto()
 
 
 
