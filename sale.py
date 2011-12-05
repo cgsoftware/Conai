@@ -7,6 +7,31 @@ from tools.translate import _
 
 from osv import fields, osv
 
+
+class sale_order(osv.osv):
+    _inherit = 'sale.order'
+    _columns={
+              'esenzione_conai':fields.many2one('conai.esenzioni', 'Tipo di Esenzione Conai'),
+              'scad_esenzione_conai': fields.date('Scadenza Esenzione Conai', required=False, readonly=False),
+              }
+    
+    def onchange_partner_id(self, cr, uid, ids, part):
+        res = super(sale_order,self).onchange_partner_id(cr, uid, ids, part)
+        val = res.get('value', False)
+        if part: 
+             part = self.pool.get('res.partner').browse(cr, uid, part)
+             if part.esenzione: #esiste un codice di esenzione conai
+                 val['esenzione_conai']= part.esenzione.id
+                 val['scad_esenzione_conai']=part.scad_esenzione
+        
+        return {'value': val}               
+    
+    
+    
+sale_order()
+
+
+
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
     
@@ -15,8 +40,14 @@ class sale_order_line(osv.osv):
         res = {}
         if context is None:
             context = {}
+        
         for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = line.prezzo_conai * line.peso_conai
+            if line.order_id.esenzione_conai and line.order_id.scad_esenzione_conai>=line.order_id.date_order: # c'è una esenzione conai
+                # c'è un codice di esenzione
+                res[line.id] = line.prezzo_conai * line.peso_conai
+                res[line.id] = res[line.id] *(1-line.order_id.esenzione_conai.perc/100)
+            else:
+                res[line.id] = line.prezzo_conai * line.peso_conai
                 
         return res
    

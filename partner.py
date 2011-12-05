@@ -13,7 +13,7 @@ class partner(osv.osv):
     
     _columns = {                            
                 'esenzione':fields.many2one('conai.esenzioni', 'Tipo di Esenzione Conai'),
-                'perc':fields.float('Percentuale di Esenzione', required=False) ,
+                'perc': fields.related('esenzione', 'perc', string='% di esenzione', type='float', relation='conai.esenzioni',readonly=True),
                 'dati':fields.char('Dati di Esenzione', size=100),
                 'scad_esenzione': fields.date('Scadenza Esenzione', required=False, readonly=False),
                 }

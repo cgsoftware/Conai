@@ -6,6 +6,13 @@
             <field name="model">fiscaldoc.header</field>
             <field name="inherit_id" ref="ItalianFiscalDocument.view_fiscaldoc_form"/>
             <field name="arch" type="xml">
+                <field name="righe_totali_iva"  position="before">
+                	 <group col="6" string="Dati Esenzione Conai" colspan="4">
+                	      <field name='esenzione_conai' />
+                	      <field name='scad_esenzione_conai' />
+                	                 	  
+                     </group>       
+                </field>
   
             	<field name="codice_iva" position="after"> 
                 <newline/>

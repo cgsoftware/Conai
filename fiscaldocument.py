@@ -7,18 +7,55 @@ from tools.translate import _
 
 from osv import fields, osv
 
+
+class FiscalDocHeader(osv.osv):
+    _inherit = 'fiscaldoc.header'
+
+    _columns={
+              'esenzione_conai':fields.many2one('conai.esenzioni', 'Tipo di Esenzione Conai'),
+              'scad_esenzione_conai': fields.date('Scadenza Esenzione Conai', required=False, readonly=False),
+              }
+  
+    def onchange_partner_id(self, cr, uid, ids, part,context):
+        res = super(FiscalDocHeader,self).onchange_partner_id(cr, uid, ids, part,context)
+        val = res.get('value', False)
+        if part: 
+             part = self.pool.get('res.partner').browse(cr, uid, part)
+             if part.esenzione: #esiste un codice di esenzione conai
+                 val['esenzione_conai']= part.esenzione.id
+                 val['scad_esenzione_conai']=part.scad_esenzione
+        
+        return {'value': val}               
+ 
+
+FiscalDocHeader()
+
+
+
 class FiscalDocRighe(osv.osv):
     _inherit = 'fiscaldoc.righe'
+
+
+    
+    
+    
     
     def _tot_riga_conai(self, cr, uid, ids, field_name, arg, context=None):
-     #  PER CALCOLARE QUESTI DATI DEVE PRIMA ACCERTARSI CHE IL CASSTELLETTO IVA SIA CORRETTO
+
         res = {}
         if context is None:
             context = {}
+        
         for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = line.prezzo_conai * line.peso_conai
+            if line.name.esenzione_conai and line.name.scad_esenzione_conai>=line.name.data_documento: # c'è una esenzione conai
+                # c'è un codice di esenzione
+                res[line.id] = line.prezzo_conai * line.peso_conai
+                res[line.id] = res[line.id] *(1-line.name.esenzione_conai.perc/100)
+            else:
+                res[line.id] = line.prezzo_conai * line.peso_conai
                 
         return res
+
    
     _columns = {
                'cod_conai':fields.many2one('conai.cod', 'Codice Conai'),

@@ -30,6 +30,7 @@ class conai_esenzioni(osv.osv):
     _columns = {
               'name':fields.char('Codice Esenzione', size=10, required=True),
               'descrizione':fields.char('Descrizione Esenzione', size=50, require=True),
+              'perc':fields.float('Percentuale di Esenzione', required=False) ,
               }    
 conai_esenzioni()
 

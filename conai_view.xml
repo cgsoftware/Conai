@@ -108,6 +108,9 @@
 		<field name="name" />
 		<field name="descrizione" />
 
+		<field name="perc"/>
+				
+
 
 	      </tree>
 	    </field>
@@ -121,6 +124,9 @@
 	      <form string="Esenzioni Conai">
 		<field name="name" />
 		<field name="descrizione" />
+				<newline/>
+		<field name="perc"/>
+		
 	      </form>
 	    </field>
 	  </record>
