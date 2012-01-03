@@ -131,7 +131,7 @@ class conai_castelletto(osv.osv):
                 par = [('name','=',riga.name.id),('imballo','=',riga.cod_conai.id),('codice_iva','=',riga.codice_iva.id)]
                 id_cats = self.search(cr,uid,par)
                 if id_cats:
-                  for indiPSEce in id_cats: 
+                  for indice in id_cats: 
                     # esiste già un record simile e quindi aggiungo il totale
                     peso = self.browse(cr,uid,indice).peso+riga.peso_conai
                     totale_conai = self.browse(cr,uid,indice).totale_conai+riga.totale_conai

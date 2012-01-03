@@ -1,8 +1,4 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_conai_cod","conai.cod","model_conai_cod",,1,1,1,1
-<<<<<<< HEAD
 "access_conai_esenzioni","conai.esenzioni","model_conai_esenzioni",,1,1,1,1
 "access_conai_castelletto","conai.castelletto","model_conai_castelletto",,1,1,1,1
-=======
-"access_esenzione","conai.es","model_esenzione",,1,1,1,1
->>>>>>> 458bcde7e624a5f78113ce16df60e6f42bc865cf
