@@ -13,6 +13,10 @@
                     <field name='scad_esenzione_conai'  />
                 
                 </field>
+                <field name="amount_untaxed" position="after" > 
+                <field name='amount_total_conai'  />
+ 
+                </field>
                 <field name="product_uom_qty" position="replace" >
                        <field name="product_uom_qty"
                         on_change="on_change_qty(product_id , parent.pricelist_id, product_uom_qty, parent.partner_id, product_uos, parent.date_order)" 

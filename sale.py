@@ -4,16 +4,90 @@ import pooler, tools
 import math
 import decimal_precision as dp
 from tools.translate import _
-
+import sale
 from osv import fields, osv
 
 
 class sale_order(osv.osv):
     _inherit = 'sale.order'
+    
+    def _get_order(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool.get('sale.order.line').browse(cr, uid, ids, context=context):
+            result[line.order_id.id] = True
+        return result.keys()
+
+    def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
+        #import pdb;pdb.set_trace()
+        cur_obj = self.pool.get('res.currency')
+        
+        res = super(sale_order,self)._amount_all( cr, uid, ids, field_name, arg, context)       
+        for order in self.browse(cr, uid, ids, context=context):
+            cur = order.pricelist_id.currency_id
+            for line in order.order_line:
+                res[order.id]['amount_total'] = res[order.id]['amount_total'] + cur_obj.round(cr, uid, cur, line.totale_conai)
+        return res    
+    
+    def _amount_all_conai(self, cr, uid, ids, field_name, arg, context=None):
+        #import pdb;pdb.set_trace()
+        cur_obj = self.pool.get('res.currency')
+        res = {}
+        
+        for order in self.browse(cr, uid, ids, context=context):
+            res[order.id] = {
+                'amount_total_conai': 0.0,
+                }
+            val =  0.0
+            cur = order.pricelist_id.currency_id
+            for line in order.order_line:
+                val += line.totale_conai
+            res[order.id]['amount_total_conai'] = cur_obj.round(cr, uid, cur, val)
+
+
+        
+        return res
     _columns={
+
+        'amount_untaxed': fields.function(_amount_all, method=True, digits_compute=dp.get_precision('Sale Price'), string='Untaxed Amount',
+            store={
+                'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line'], 10),
+                'sale.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
+            },
+            multi='sums', help="The amount without tax."),
+        'amount_tax': fields.function(_amount_all, method=True, digits_compute=dp.get_precision('Sale Price'), string='Taxes',
+            store={
+                'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line'], 10),
+                'sale.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
+            },
+            multi='sums', help="The tax amount."),
+        'amount_total': fields.function(_amount_all, method=True, digits_compute=dp.get_precision('Sale Price'), string='Total',
+           store={
+               'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line'], 10),
+                'sale.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
+            },
+            multi='sums', help="The total amount."),
+        'amount_total_conai': fields.function(_amount_all_conai, method=True, digits_compute=dp.get_precision('Sale Price'), string='Conai',
+ #          store={
+ #              'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line'], 10),
+  #              'sale.order.line': (_get_order, ['totale_conai','peso_conai'], 10),
+  #          },
+            multi='sums', help="The total amount. Conai"),
+              
               'esenzione_conai':fields.many2one('conai.esenzioni', 'Tipo di Esenzione Conai'),
               'scad_esenzione_conai': fields.date('Scadenza Esenzione Conai', required=False, readonly=False),
               }
+    
+    
+    def _amount_line_tax(self, cr, uid, line, context=None):
+        val = super(sale_order,self)._amount_line_tax(cr, uid, line, context)
+        valconai = 0.0
+        #import pdb;pdb.set_trace()
+        # fa il calcolo delle tassa applicate al conai in modo che compaiano nel totale 
+        for c in self.pool.get('account.tax').compute_all(cr, uid, line.tax_id, line.totale_conai, 1, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)['taxes']:
+            valconai += c.get('amount', 0.0)
+        return val+valconai
+    
+
     
     def onchange_partner_id(self, cr, uid, ids, part):
         res = super(sale_order,self).onchange_partner_id(cr, uid, ids, part)
@@ -50,12 +124,24 @@ class sale_order_line(osv.osv):
                 res[line.id] = line.prezzo_conai * line.peso_conai
                 
         return res
+    
+#    def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
+#        import pdb;pdb.set_trace()
+#        tax_obj = self.pool.get('account.tax')
+#        cur_obj = self.pool.get('res.currency')
+#        res = super(sale_order_line,self)._amount_line(self, cr, uid, ids, field_name, arg, context=None)
+#        if context is None:
+#            context = {}
+#        for line in self.browse(cr, uid, ids, context=context):
+#            res[line.id] += cur_obj.round(cr, uid, cur, line.totale_conai)
+#        return res
+
    
     _columns = {
                'cod_conai':fields.many2one('conai.cod', 'Codice Conai'),
                'peso_conai':fields.float('Peso Conai', digits=(2, 7)),
                'prezzo_conai':fields.float('Valore Unitario ', digits=(2, 7), required=True),
-               'totale_conai': fields.function(_tot_riga_conai, method=True, string='Totale riga Conai', digits=(12, 7)),
+               'totale_conai': fields.function(_tot_riga_conai, method=True, store=False ,string='Totale riga Conai', digits=(12, 7)),
                # 'totale_conai':fields.float('Totale Conai', digits=(12, 7)),
                }
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
