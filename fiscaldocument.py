@@ -19,13 +19,14 @@ class FiscalDocHeader(osv.osv):
     def onchange_partner_id(self, cr, uid, ids, part,context):
         res = super(FiscalDocHeader,self).onchange_partner_id(cr, uid, ids, part,context)
         val = res.get('value', False)
+        warning = res.get('warning', False)
         if part: 
              part = self.pool.get('res.partner').browse(cr, uid, part)
              if part.esenzione: #esiste un codice di esenzione conai
                  val['esenzione_conai']= part.esenzione.id
                  val['scad_esenzione_conai']=part.scad_esenzione
         
-        return {'value': val}               
+        return {'value': val, 'warning': warning}        
  
 
 FiscalDocHeader()
