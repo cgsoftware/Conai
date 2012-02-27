@@ -7,6 +7,10 @@ from tools.translate import _
 
 from osv import fields, osv
 
+def arrot(cr,uid,valore,decimali):
+    #import pdb;pdb.set_trace()
+    return round(valore,decimali(cr)[1])
+
 
 class FiscalDocHeader(osv.osv):
     _inherit = 'fiscaldoc.header'
@@ -54,7 +58,7 @@ class FiscalDocRighe(osv.osv):
                 res[line.id] = res[line.id] *(1-line.name.esenzione_conai.perc/100)
             else:
                 res[line.id] = line.prezzo_conai * line.peso_conai
-                
+            res[line.id]= arrot(cr,uid,res[line.id],dp.get_precision('Account'))  # arrotonda a 2 cifre in genere  
         return res
 
    
@@ -62,7 +66,7 @@ class FiscalDocRighe(osv.osv):
                'cod_conai':fields.many2one('conai.cod', 'Codice Conai'),
                'peso_conai':fields.float('Peso Conai', digits=(2, 7)),
                'prezzo_conai':fields.float('Valore Unitario ', digits=(2, 7), required=False),
-               'totale_conai': fields.function(_tot_riga_conai, method=True, string='Totale riga Conai', digits=(12, 7)),
+               'totale_conai': fields.function(_tot_riga_conai, method=True, string='Totale riga Conai',  digits_compute=dp.get_precision('Account')),
                # 'totale_conai':fields.float('Totale Conai', digits=(12, 7)),
                }    
     
@@ -113,8 +117,8 @@ class conai_castelletto(osv.osv):
                      'name': fields.many2one('fiscaldoc.header', 'Numero Documento', required=True, ondelete='cascade', select=True, readonly=True),                
                      'imballo':fields.many2one('conai.cod', 'Codice CONAI', required=True, ondelete='cascade', select=True, readonly=True),
                      'codice_iva':fields.many2one('account.tax', 'Codice Iva', readonly=False, required=True),                 
-                     'peso':fields.float('Peso', digits=(12, 2)),
-                     'totale_conai':fields.float('Totale Imponibile', digits=(12, 2)),
+                     'peso':fields.float('Peso', digits=(12, 7)),
+                     'totale_conai':fields.float('Totale Imponibile', digits_compute=dp.get_precision('Account')),
                                
                      }
     
@@ -176,6 +180,7 @@ class FiscalDocIva(osv.osv):
             for rg_iva in self.pool.get("fiscaldoc.iva").browse(cr,uid,righe_iva):
                 perc_iva = get_perc_iva(self, cr, uid, ids, rg_iva.codice_iva.id, context)
                 imposta = rg_iva.imponibile * perc_iva
+                imposta = arrot(cr,uid,imposta,dp.get_precision('Account'))
                 ok =  self.pool.get("fiscaldoc.iva").write(cr,uid,[rg_iva.id],{'imposta':imposta})
             
             
