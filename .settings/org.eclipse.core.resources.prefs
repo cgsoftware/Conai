@@ -1,4 +1,4 @@
-#Thu Oct 27 09:29:09 CEST 2011
+#Wed Mar 14 07:16:37 CET 2012
 =\=\=\=\=\=\=
 <<<<<<<=HEAD
 >>>>>>>=458bcde7e624a5f78113ce16df60e6f42bc865cf
@@ -9,7 +9,6 @@ encoding/__init__.py=utf-8
 encoding/__terp__.py=utf-8
 encoding/conai.py=utf-8
 encoding/fiscaldocument.py=utf-8
-encoding/fiscaldocument_old.py=utf-8
 encoding/iva.py=utf-8
 encoding/partner.py=utf-8
 encoding/product.py=utf-8

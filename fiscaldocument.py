@@ -70,8 +70,8 @@ class FiscalDocRighe(osv.osv):
                # 'totale_conai':fields.float('Totale Conai', digits=(12, 7)),
                }    
     
-    def onchange_articolo(self, cr, uid, ids, product_id, listino_id, qty, partner_id, data_doc, uom):
-                res = super(FiscalDocRighe, self).onchange_articolo(cr, uid, ids, product_id, listino_id, qty, partner_id, data_doc, uom)
+    def onchange_articolo(self, cr, uid, ids, product_id, listino_id, qty, partner_id, data_doc, uom,context):
+                res = super(FiscalDocRighe, self).onchange_articolo(cr, uid, ids, product_id, listino_id, qty, partner_id, data_doc, uom,context)
                 v = res.get('value', False)
                 if product_id:
                     art_obj = self.pool.get("product.product").browse(cr, uid, [product_id])[0]
@@ -89,8 +89,8 @@ class FiscalDocRighe(osv.osv):
                 
                 return {'value':v}
             
-    def on_change_qty(self, cr, uid, ids, product_id, listino_id, qty, partner_id, uom, data_doc): #
-        res = super(FiscalDocRighe, self).on_change_qty(cr, uid, ids, product_id, listino_id, qty, partner_id, uom, data_doc)
+    def on_change_qty(self, cr, uid, ids, product_id, listino_id, qty, partner_id, uom, data_doc,context): #
+        res = super(FiscalDocRighe, self).on_change_qty(cr, uid, ids, product_id, listino_id, qty, partner_id, uom, data_doc,context)
         v = res.get('value', False)
         if product_id:
                     art_obj = self.pool.get("product.product").browse(cr, uid, [product_id])[0]
