@@ -73,6 +73,8 @@ class FiscalDocRighe(osv.osv):
     def onchange_articolo(self, cr, uid, ids, product_id, listino_id, qty, partner_id, data_doc, uom,context):
                 res = super(FiscalDocRighe, self).onchange_articolo(cr, uid, ids, product_id, listino_id, qty, partner_id, data_doc, uom,context)
                 v = res.get('value', False)
+                warning = res.get('warning', False)
+                domain = res.get('domain', False)
                 if product_id:
                     art_obj = self.pool.get("product.product").browse(cr, uid, [product_id])[0]
                     if art_obj.conai.id:
@@ -86,12 +88,15 @@ class FiscalDocRighe(osv.osv):
                         v['prezzo_conai'] = 0.0
                           
                                       
-                
-                return {'value':v}
+                return {'value': v, 'domain': domain, 'warning': warning}
+                #return {'value':v}
             
     def on_change_qty(self, cr, uid, ids, product_id, listino_id, qty, partner_id, uom, data_doc,context): #
         res = super(FiscalDocRighe, self).on_change_qty(cr, uid, ids, product_id, listino_id, qty, partner_id, uom, data_doc,context)
         v = res.get('value', False)
+        warning = res.get('warning', False)
+        domain = res.get('domain', False)
+        
         if product_id:
                     art_obj = self.pool.get("product.product").browse(cr, uid, [product_id])[0]
                     if art_obj.conai.id:
@@ -103,8 +108,8 @@ class FiscalDocRighe(osv.osv):
                         v['cod_conai'] = 0.0
                         v['peso_conai'] = 0.0
                         v['prezzo_conai'] = 0.0
-        
-        return {'value':v}
+        return {'value': v, 'domain': domain, 'warning': warning}
+        #return {'value':v}
      
 
 FiscalDocRighe()
