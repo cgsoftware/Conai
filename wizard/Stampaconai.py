@@ -9,7 +9,76 @@ from osv import osv, fields
 from tools.translate import _
 
 
-
+class tempstatistiche_conai(osv.osv):
+    def _pulisci(self,cr,uid,context):
+        ids = self.search(cr,uid,[])
+        ok = self.unlink(cr,uid,ids,context)
+        return True
+    
+    
+    _name = 'tempstatistiche.conai'
+    _description = 'temporaneo di stampa conai periodico'
+    _columns = {'p_dadata': fields.date('Da Data Documento' ),
+                'p_adata': fields.date('A Data Documento'),
+                'doc_id':fields.many2one('fiscaldoc.header'),
+                'documento':fields.char('NomeDoc', size=20),
+                'castelletto_id':fields.many2one('conai.castelletto'),
+                'prezzo':fields.float('Prezzo', digits=(25,3)),
+                'peso': fields.float('peso', digits=(25,3)),
+                'contributo':fields.float('contributo', digits=(25,3)),
+                'codice_conai':fields.char('NomeDoc', size=20),
+#                'contropartita':fields.char('Contropartita', size=20),
+                }
+    
+    def carica_doc(self, cr,uid,parametri,context):
+        ok = self._pulisci(cr, uid, context)
+        testa_obj = self.pool.get('fiscaldoc.header')
+        partner_obj = self.pool.get('res.partner')
+        conai = self.pool.get('conai.castelletto')
+        filtro1 = [('tipo_documento', 'in', ('FA','FI','FD','NC','ND'))] #AGGIUNGERE NOTE CREDITO E NOTE DEBITO
+        idsTipoDoc = self.pool.get('fiscaldoc.causalidoc').search(cr, uid, filtro1)
+        idsTipoDoc = tuple(idsTipoDoc)
+        filtro2 = [('data_documento','<=',parametri.adata ),('data_documento','>=', parametri.dadata), ('tipo_doc', 'in', idsTipoDoc)]
+        doc_ids = testa_obj.search(cr, uid, filtro2)
+        if doc_ids:
+            for documento in testa_obj.browse(cr,uid, doc_ids):
+                if not documento.esenzione_conai:
+                    
+                    cerca = [('name', '=', documento.id)]
+                    conai_id = conai.search(cr, uid, cerca)
+                    if conai_id:
+                        #import pdb;pdb.set_trace()
+                        cast_obj = conai.browse(cr, uid, conai_id[0])
+                        if documento.tipo_doc.tipo_documento == 'NC' or documento.tipo_doc.tipo_documento == 'ND':
+                            riga_wr = {'p_dadata' : parametri.dadata,
+                                   'p_adata' : parametri.adata,
+                                   'doc_id':documento.id,
+                                   'documento':documento.name,
+                                   'castelletto_id':cast_obj.id,
+                                   'prezzo':cast_obj.imballo.valore*-1,                                 
+                                   'peso':cast_obj.peso,
+                                   'contributo':cast_obj.totale_conai*-1,
+                                   'codice_conai':cast_obj.imballo.descrizione
+                                   }
+                            ok = self.create(cr, uid, riga_wr)
+                        else:
+                            riga_wr = {'p_dadata' : parametri.dadata,
+                                   'p_adata' : parametri.adata,
+                                   'doc_id':documento.id,
+                                   'documento':documento.name,
+                                   'castelletto_id':cast_obj.id,
+                                   'prezzo':cast_obj.imballo.valore,                                 
+                                   'peso':cast_obj.peso,
+                                   'contributo':cast_obj.totale_conai,
+                                   'codice_conai':cast_obj.imballo.descrizione
+                                   }
+                            ok = self.create(cr, uid, riga_wr)
+            return True
+                            
+                        
+                            
+        
+tempstatistiche_conai()
   
 
 class stampa_conai(osv.osv_memory):
@@ -67,6 +136,9 @@ class stampa_conai(osv.osv_memory):
         data['form'] = self.read(cr, uid, ids, ['dadata',  'adata'])[0]
         used_context = self._build_contexts(cr, uid, ids, data, context=context)
         data['form']['parameters'] = used_context
+        parametri = self.browse(cr,uid,ids)[0]
+        
+        ok = self.pool.get('tempstatistiche.conai').carica_doc(cr,uid,parametri,context)
         return self._print_report(cr, uid, ids, data, context=context)
   
     def view_init(self, cr, uid, fields_list, context=None):
