@@ -42,7 +42,7 @@ class tempstatistiche_conai(osv.osv):
         doc_ids = testa_obj.search(cr, uid, filtro2)
         if doc_ids:
             for documento in testa_obj.browse(cr,uid, doc_ids):
-                if not documento.esenzione_conai:
+                #if not documento.esenzione_conai:
                     
                     cerca = [('name', '=', documento.id)]
                     conai_id = conai.search(cr, uid, cerca)
